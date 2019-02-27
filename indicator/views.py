@@ -37,14 +37,14 @@ def cmd_detail(request, cmd_id):
 '''
 
 @api_view(['GET'])
-def cmd_list(request):
+def cmd_list(request, format=None):
    if request.method == 'GET':
       queryset = LighthouseTest.objects.all()
       serializer = CmdSerializer(queryset, many=True)
       return Response(serializer.data)
 
 @api_view(['GET'])
-def cmd_detail(request, cmd_id):
+def cmd_detail(request, cmd_id, format=None):
    if request.method == 'GET':
       try:
          res = LighthouseTest.objects.get(cmd=cmd_id)
