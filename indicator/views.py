@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import LighthouseTest
 from .serializers import CmdSerializer
 
@@ -13,6 +15,7 @@ class ListCmdView(generics.ListAPIView):
    serializer_class = CmdSerializer
 '''
 
+'''
 def cmd_list(request):
    if request.method == 'GET':
       queryset = LighthouseTest.objects.all()
@@ -29,3 +32,21 @@ def cmd_detail(request, cmd_id):
    if request.method == 'GET':
       serializer = CmdSerializer(res)
       return JsonResponse(serializer.data, safe=False)
+'''
+
+class Cmd_list(APIView):
+   def get(self, request, format=None):
+      queryset = LighthouseTest.objects.all()
+      serializer = CmdSerializer(queryset, many=True)
+      return Response(serializer.data)
+
+class Cmd_detail(APIView):
+   def get_object(self, cmd):
+      try:
+         return LighthouseTest.objects.get(cmd=cmd)
+      except:
+         raise Http404
+   def get(self, request, cmd_id, format=None):
+      res = self.get_object(cmd_id)
+      serializer = CmdSerializer(res)
+      return Response(serializer.data)
