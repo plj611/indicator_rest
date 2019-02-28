@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse, Http404
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import mixins
 from .models import LighthouseTest
 from .serializers import CmdSerializer
 
@@ -34,6 +35,7 @@ def cmd_detail(request, cmd_id):
       return JsonResponse(serializer.data, safe=False)
 '''
 
+'''
 class Cmd_list(APIView):
    def get(self, request, format=None):
       queryset = LighthouseTest.objects.all()
@@ -50,3 +52,22 @@ class Cmd_detail(APIView):
       res = self.get_object(cmd_id)
       serializer = CmdSerializer(res)
       return Response(serializer.data)
+
+'''
+
+class Cmd_list(mixins.ListModelMixin,
+               generics.GenericAPIView):
+   queryset = LighthouseTest.objects.all()
+   serializer_class = CmdSerializer
+
+   def get(self, request, *args, **kwargs):
+      return self.list(request, *args, **kwargs)
+
+class Cmd_detail(mixins.RetrieveModelMixin,
+                 generics.GenericAPIView):
+   queryset = LighthouseTest.objects.all()
+   serializer_class = CmdSerializer
+   lookup_field = 'cmd'
+
+   def get(self, request, *args, **kwargs):
+      return self.retrieve(request, *args, **kwargs)

@@ -8,5 +8,5 @@ from . import views
 urlpatterns = [
 #    path('cmd/', ListCmdView.as_view(), name="cmds-all"),
    path('cmd/', views.Cmd_list.as_view()),
-   path('cmd/<str:cmd_id>', views.Cmd_detail.as_view()),
+   path('cmd/<str:cmd>', views.Cmd_detail.as_view()),
 ]
