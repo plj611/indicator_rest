@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import mixins
-from .models import LighthouseTest
+from .models import Lighthouse
 from .serializers import CmdSerializer
 
 
@@ -57,7 +57,7 @@ class Cmd_detail(APIView):
 
 class Cmd_list(mixins.ListModelMixin,
                generics.GenericAPIView):
-   queryset = LighthouseTest.objects.all()
+   queryset = Lighthouse.objects.all()
    serializer_class = CmdSerializer
 
    def get(self, request, *args, **kwargs):
@@ -65,7 +65,7 @@ class Cmd_list(mixins.ListModelMixin,
 
 class Cmd_detail(mixins.RetrieveModelMixin,
                  generics.GenericAPIView):
-   queryset = LighthouseTest.objects.all()
+   queryset = Lighthouse.objects.all()
    serializer_class = CmdSerializer
    lookup_field = 'cmd'
 
