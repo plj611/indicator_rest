@@ -2,3 +2,4 @@
 lh/settings.py
 todo
 *.swp
+indicator/migrations/

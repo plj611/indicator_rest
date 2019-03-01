@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import LighthouseTest
+from .models import Lighthouse
 
 
 class CmdSerializer(serializers.ModelSerializer):
 #class CmdSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = LighthouseTest
+        model = Lighthouse
         fields = ("cmd", "act")
