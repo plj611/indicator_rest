@@ -70,4 +70,7 @@ class Cmd_detail(mixins.RetrieveModelMixin,
    lookup_field = 'cmd'
 
    def get(self, request, *args, **kwargs):
+      res = Lighthouse.objects.get(cmd = kwargs['cmd'])
+      res.visit_ip = request.META['REMOTE_ADDR']
+      res.save()
       return self.retrieve(request, *args, **kwargs)

@@ -6,4 +6,4 @@ class CmdSerializer(serializers.ModelSerializer):
 #class CmdSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Lighthouse
-        fields = ("cmd", "act", "date_time")
+        fields = ("cmd", "act", "date_time", "visit_ip")
