@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import mixins
 from .models import Lighthouse
 from .serializers import CmdSerializer
+import datetime
 
 
 # Create your views here.
@@ -63,6 +64,7 @@ class Cmd_list(mixins.ListModelMixin,
    def get(self, request, *args, **kwargs):
       return self.list(request, *args, **kwargs)
 
+'''
 class Cmd_detail(mixins.RetrieveModelMixin,
                  generics.GenericAPIView):
    queryset = Lighthouse.objects.all()
@@ -70,7 +72,26 @@ class Cmd_detail(mixins.RetrieveModelMixin,
    lookup_field = 'cmd'
 
    def get(self, request, *args, **kwargs):
-      res = Lighthouse.objects.get(cmd = kwargs['cmd'])
+#      res = Lighthouse.objects.get(cmd = kwargs['cmd'])
+      res = Lighthouse.objects.order_by('-create_date_time').filter(cmd = kwargs['cmd'])[0]
       res.visit_ip = request.META['REMOTE_ADDR']
       res.save()
+      print('**********************')
       return self.retrieve(request, *args, **kwargs)
+'''
+
+class Cmd_detail(APIView):
+   def get_object(self, cmd_id, request):
+      try:
+         res = Lighthouse.objects.order_by('-create_date_time').filter(cmd = cmd_id)[0]
+#         res = Lighthouse.objects.order_by('-create_date_time')[0]
+         res.visit_ip = request.META['REMOTE_ADDR']
+         res.visit_date_time = datetime.datetime.now()
+         res.save()
+         return res
+      except:
+         raise Http404
+   def get(self, request, cmd, format=None):
+      res = self.get_object(cmd, request)
+      serializer = CmdSerializer(res)
+      return Response(serializer.data)
