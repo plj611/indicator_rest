@@ -4,6 +4,8 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import mixins
+from rest_framework import permissions
+from rest_framework import status
 from .models import Lighthouse
 from .serializers import CmdSerializer
 import datetime
@@ -81,17 +83,31 @@ class Cmd_detail(mixins.RetrieveModelMixin,
 '''
 
 class Cmd_detail(APIView):
+
+   permission_classes = (permissions.IsAuthenticated, )
+
    def get_object(self, cmd_id, request):
       try:
          res = Lighthouse.objects.order_by('-create_date_time').filter(cmd = cmd_id)[0]
 #         res = Lighthouse.objects.order_by('-create_date_time')[0]
          res.visit_ip = request.META['REMOTE_ADDR']
-         res.visit_date_time = datetime.datetime.now()
+         res.visit_date_time = datetime.datetime.utcnow()
          res.save()
          return res
       except:
          raise Http404
+
    def get(self, request, cmd, format=None):
       res = self.get_object(cmd, request)
       serializer = CmdSerializer(res)
       return Response(serializer.data)
+
+   def put(self, request, cmd, format=None):
+      print('Hi\n')
+      print(request.data)
+      res = self.get_object(cmd, request)
+      serializer = CmdSerializer(res, request.data)
+      if serializer.is_valid():
+         serializer.save()
+         return Response(serializer.data)
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
